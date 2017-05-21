@@ -127,9 +127,10 @@ lib_managed/
 src_managed/
 project/boot/
 project/plugins/project/
-project/target/**
+project/target
 .history
 .cache
 .lib/
+
 
 # End of https://www.gitignore.io/api/java,macos,scala,intellij,sbt
