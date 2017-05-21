@@ -7,6 +7,7 @@ import com.lightbend.lagom.scaladsl.server._
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
 import play.api.libs.ws.ahc.AhcWSComponents
 import com.example.greeting.api.GreetingService
+import com.lightbend.lagom.scaladsl.broker.kafka.LagomKafkaComponents
 import com.softwaremill.macwire._
 
 class GreetingLoader extends LagomApplicationLoader {
@@ -27,7 +28,8 @@ class GreetingLoader extends LagomApplicationLoader {
 abstract class GreetingApplication(context: LagomApplicationContext)
   extends LagomApplication(context)
     with CassandraPersistenceComponents
-    with AhcWSComponents {
+    with AhcWSComponents
+    with LagomKafkaComponents{
 
   // Bind the service that this server provides
   override lazy val lagomServer = serverFor[GreetingService](wire[GreetingServiceImpl])

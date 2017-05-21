@@ -52,7 +52,7 @@ class GreetingEntity extends PersistentEntity {
         // In response to this command, we want to first persist it as a
         // GreetingMessageChanged event
         ctx.thenPersist(
-          GreetingMessageChanged(newMessage)
+          GreetingMessageChanged(entityId, newMessage)
         ) { _ =>
           // Then once the event is successfully persisted, we respond with done.
           ctx.reply(Done)
@@ -69,7 +69,7 @@ class GreetingEntity extends PersistentEntity {
     }.onEvent {
 
       // Event handler for the GreetingMessageChanged event
-      case (GreetingMessageChanged(newMessage), state) =>
+      case (GreetingMessageChanged(entityId, newMessage), state) =>
         // We simply update the current state to use the greeting message from
         // the event.
         GreetingState(newMessage, LocalDateTime.now().toString)

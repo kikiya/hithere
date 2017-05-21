@@ -4,7 +4,8 @@ import akka.{Done, NotUsed}
 import com.lightbend.lagom.scaladsl.api.broker.Topic
 import com.lightbend.lagom.scaladsl.api.broker.kafka.{KafkaProperties, PartitionKeyStrategy}
 import com.lightbend.lagom.scaladsl.api.{Service, ServiceCall}
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, Json, __}
+import julienrf.json.derived
 
 /**
   * The greeting service interface.
@@ -29,7 +30,7 @@ trait GreetingService extends Service {
     * This  gets published to Kafka
     *
     */
-  def greetingEvents() : Topic[GreetingEvent]
+  def greetingEvents : Topic[GreetingEvent]
 
   override final def descriptor = {
     import Service._
@@ -62,7 +63,7 @@ object GreetingMessage {
     *
     * This will be picked up by a Lagom implicit conversion from Play's JSON format to Lagom's message serializer.
     */
-  implicit val format: Format[GreetingMessage] = Json.format[GreetingMessage]
+  implicit val format: Format[GreetingMessage] = Json.format
 }
 
 /**
@@ -72,9 +73,6 @@ sealed trait GreetingEvent{
   val name: String
 }
 
-object GreetingEvent{
-  implicit val format: Format[GreetingEvent] = Json.format
-}
 
 /**
   * An event that represents a change in greeting message.
@@ -90,5 +88,10 @@ object GreetingMessageChanged {
     * needs to be declared so that they can be serialized and deserialized.
     */
   implicit val format: Format[GreetingMessageChanged] = Json.format
+}
+
+object GreetingEvent {
+  implicit val format: Format[GreetingEvent] =
+    derived.flat.oformat((__ \ "type").format[String])
 }
 

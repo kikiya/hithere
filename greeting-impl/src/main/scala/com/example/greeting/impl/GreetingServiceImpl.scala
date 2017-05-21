@@ -35,7 +35,7 @@ class GreetingServiceImpl(persistentEntityRegistry: PersistentEntityRegistry) ex
     * This  gets published to Kafka
     *
     */
-  override def greetingEvents(): Topic[api.GreetingEvent] = TopicProducer.taggedStreamWithOffset(GreetingEvent.Tag.allTags.to[immutable.Seq]) { (tag, offset) =>
+  override def greetingEvents: Topic[com.example.greeting.api.GreetingEvent] = TopicProducer.taggedStreamWithOffset(GreetingEvent.Tag.allTags.to[immutable.Seq]) { (tag, offset) =>
     persistentEntityRegistry.eventStream(tag, offset).filter(e =>
       e.event.isInstanceOf[GreetingMessageChanged]
     ).mapAsync(1) {
@@ -43,6 +43,7 @@ class GreetingServiceImpl(persistentEntityRegistry: PersistentEntityRegistry) ex
         event.event match {
           case GreetingMessageChanged(name, message) =>
             val toPublish = new com.example.greeting.api.GreetingMessageChanged(name,message)
+            println(s"publishing this event: $toPublish")
             Future.successful(toPublish, event.offset)
         }
         }
