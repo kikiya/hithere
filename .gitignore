@@ -134,3 +134,8 @@ project/target
 
 
 # End of https://www.gitignore.io/api/java,macos,scala,intellij,sbt
+greeting-impl/logs/
+logs/
+project/project/
+whosthere-impl/logs/
+/whosthere-impl/target/
